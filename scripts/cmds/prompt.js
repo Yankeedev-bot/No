@@ -1,45 +1,62 @@
-const a = require("axios");
+const axios = require("axios");
+const nix = "http://65.109.80.126:20409/aryan/promptv2";
 
 module.exports = {
   config: {
     name: "prompt",
     aliases: ["p"],
     version: "0.0.1",
-    author: "ArYAN",
+    role: 0,
+    author: "Christus",
     category: "ai",
-    guide: {
-      en: "{pn} reply with an image",
-    },
+    cooldowns: 5,
+    guide: { en: "Reply to an image to generate Midjourney prompt" }
   },
 
-  onStart: async function ({ api: b, args: c, event: d }) {
-    const u = "http://65.109.80.126:20409/aryan/prompt";
-    const p = c.join(" ") || "Describe this image";
+  onStart: async ({ api, event }) => {
+    const { threadID, messageID, messageReply } = event;
 
-    if (d.type === "message_reply" && d.messageReply.attachments[0]?.type === "photo") {
-      try {
-        const i = d.messageReply.attachments[0].url;
-        
-        const r = await a.get(u, {
-          params: { imageUrl: i, prompt: p }
-        });
-
-        const x = r.data.response || "No response";
-        
-        if (r.data.status === false) {
-          return b.sendMessage(`❌ API Error: ${r.data.message}`, d.threadID, d.messageID);
-        }
-
-        b.sendMessage(x, d.threadID, d.messageID);
-        return b.setMessageReaction("✅", d.messageID, () => {}, true);
-
-      } catch (e) {
-        console.error("Local API call error:", e.message || e);
-        b.sendMessage("❌ An error occurred with your local API. Make sure your server is running and the API file is correct.", d.threadID, d.messageID);
-        return b.setMessageReaction("❌", d.messageID, () => {}, true);
-      }
+    if (
+      !messageReply ||
+      !messageReply.attachments ||
+      messageReply.attachments.length === 0 ||
+      !messageReply.attachments[0].url
+    ) {
+      return api.sendMessage("Please reply to an image.", threadID, messageID);
     }
 
-    b.sendMessage("⚠️ Please reply with an image.", d.threadID, d.messageID);
+    try {
+      api.setMessageReaction("⏰", messageID, () => {}, true);
+
+      const imageUrl = messageReply.attachments[0].url;
+
+      const apiResponse = await axios.get(nix, {
+        params: { imageUrl }
+      });
+
+      const result = apiResponse.data;
+
+      if (!result.success) {
+        throw new Error(result.message || "Prompt API failed.");
+      }
+
+      const promptText = result.prompt || "No prompt returned.";
+
+      await api.sendMessage(
+        { body: `${promptText}` },
+        threadID,
+        messageID
+      );
+
+      api.setMessageReaction("✅", messageID, () => {}, true);
+    } catch (e) {
+      api.setMessageReaction("❌", messageID, () => {}, true);
+
+      let msg = "Error while generating prompt.";
+      if (e.response?.data?.error) msg = e.response.data.error;
+      else if (e.message) msg = e.message;
+
+      api.sendMessage(msg, threadID, messageID);
+    }
   }
 };
