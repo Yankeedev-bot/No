@@ -10,7 +10,7 @@ async function toFont(text, id = 3) {
     const { data } = await axios.get(apiUrl);
     return data.output || text;
   } catch (e) {
-    console.error("Font API error:", e.message);
+    console.error("Erreur API Font :", e.message);
     return text;
   }
 }
@@ -20,11 +20,11 @@ module.exports = {
     name: "aotquiz",
     aliases: ["attackontitanquiz", "aotqz", "attackontitankqz"],
     version: "1.0",
-    author: "Saimx69x",
+    author: "Christus",
     countDown: 10,
     role: 0,
-    category: "game",
-    guide: { en: "{pn} — Attack on Titan character guessing quiz" }
+    category: "jeu",
+    guide: { fr: "{pn} — Quiz : devinez le personnage d'Attack on Titan" }
   },
 
   onStart: async function ({ api, event }) {
@@ -38,17 +38,17 @@ module.exports = {
 
       const imageStream = await axios({ method: "GET", url: image, responseType: "stream" });
 
-      const body = await toFont(`🛡️ 𝐀𝐭𝐭𝐚𝐜𝐤 𝐨𝐧 𝐓𝐢𝐭𝐚𝐧 𝐐𝐮𝐢𝐳 ⚔️
+      const body = await toFont(`🛡️ 𝐐𝐮𝐢𝐳 𝐀𝐭𝐭𝐚𝐜𝐤 𝐨𝐧 𝐓𝐢𝐭𝐚𝐧 ⚔️
 ━━━━━━━━━━━━━━
-📷 Guess the AOT character!
+📷 Devinez le personnage AOT !
 
 🅐 ${options.A}
 🅑 ${options.B}
 🅒 ${options.C}
 🅓 ${options.D}
 
-⏳ You have 1 minute 30 seconds!
-💡 You have 3 chances! Reply with A, B, C or D.`);
+⏳ Vous avez 1 minute 30 secondes !
+💡 Vous avez 3 chances ! Répondez avec A, B, C ou D.`);
 
       api.sendMessage(
         { body, attachment: imageStream.data },
@@ -73,7 +73,7 @@ module.exports = {
                 await api.unsendMessage(info.messageID);
                 global.GoatBot.onReply.delete(info.messageID);
               } catch (e) {
-                console.error("Failed to unsend quiz message:", e.message);
+                console.error("Impossible de supprimer le message du quiz :", e.message);
               }
             }
           }, 90000);
@@ -82,7 +82,7 @@ module.exports = {
       );
     } catch (err) {
       console.error(err);
-      const failMsg = await toFont("❌ Failed to fetch Attack on Titan quiz data.");
+      const failMsg = await toFont("❌ Impossible de récupérer les données du quiz Attack on Titan.");
       api.sendMessage(failMsg, event.threadID, event.messageID);
     }
   },
@@ -92,12 +92,12 @@ module.exports = {
     const reply = event.body?.trim().toUpperCase();
 
     if (event.senderID !== author) {
-      const msg = await toFont("⚠️ This is not your quiz!");
+      const msg = await toFont("⚠️ Ce quiz n'est pas pour vous !");
       return api.sendMessage(msg, event.threadID, event.messageID);
     }
 
     if (!reply || !["A", "B", "C", "D"].includes(reply)) {
-      const msg = await toFont("❌ Please reply with A, B, C or D.");
+      const msg = await toFont("❌ Veuillez répondre avec A, B, C ou D.");
       return api.sendMessage(msg, event.threadID, event.messageID);
     }
 
@@ -105,7 +105,7 @@ module.exports = {
       try {
         await api.unsendMessage(messageID);
       } catch (e) {
-        console.error("Failed to unsend quiz message:", e.message);
+        console.error("Impossible de supprimer le message du quiz :", e.message);
       }
 
       const rewardCoin = 400;
@@ -115,13 +115,13 @@ module.exports = {
       userData.exp += rewardExp;
       await usersData.set(event.senderID, userData);
 
-      const correctMsg = await toFont(`⚔️ Shinzou wo Sasageyo! 🎉
+      const correctMsg = await toFont(`⚔️ Shinzou wo Sasageyo ! 🎉
 
-✅ You answered correctly!
-💰 +${rewardCoin} Coins
+✅ Bonne réponse !
+💰 +${rewardCoin} Pièces
 🌟 +${rewardExp} EXP
 
-🔥 You're a true Scout Regiment warrior!`);
+🔥 Vous êtes un vrai guerrier du Bataillon d'exploration !`);
 
       if (global.GoatBot.onReply.has(messageID)) {
         global.GoatBot.onReply.get(messageID).answered = true;
@@ -134,17 +134,17 @@ module.exports = {
 
       if (chances > 0) {
         global.GoatBot.onReply.set(messageID, { ...Reply, chances });
-        const wrongTryMsg = await toFont(`❌ Wrong answer!
-⏳ You still have ${chances} chance(s) left. Try again!`);
+        const wrongTryMsg = await toFont(`❌ Mauvaise réponse !
+⏳ Il vous reste ${chances} chance(s). Essayez encore !`);
         return api.sendMessage(wrongTryMsg, event.threadID, event.messageID);
       } else {
         try {
           await api.unsendMessage(messageID);
         } catch (e) {
-          console.error("Failed to unsend quiz message:", e.message);
+          console.error("Impossible de supprimer le message du quiz :", e.message);
         }
-        const wrongMsg = await toFont(`🥺 Out of chances!
-✅ The correct option was: ${correctAnswer}`);
+        const wrongMsg = await toFont(`🥺 Vous n'avez plus de chances !
+✅ La bonne réponse était : ${correctAnswer}`);
         return api.sendMessage(wrongMsg, event.threadID, event.messageID);
       }
     }
