@@ -7,12 +7,12 @@ module.exports = {
     name: "googleimage",
     aliases: ["gimg", "googleimg", "gimage"],
     version: "1.0",
-    author: "Saimx69x",
+    author: "Christus",
     role: 0,
     countDown: 5,
-    description: { en: "Search or get images from Google Images." },
+    description: { fr: "Rechercher ou obtenir des images depuis Google Images." },
     category: "image",
-    guide: { en: "{pn} <search query> - <number of images>\nExample: {pn} Naruto - 10" },
+    guide: { fr: "{pn} <requête de recherche> - <nombre d'images>\nExemple : {pn} Naruto - 10" },
   },
 
   onStart: async function ({ api, event, args }) {
@@ -20,7 +20,7 @@ module.exports = {
       const input = args.join(" ").trim();
       if (!input)
         return api.sendMessage(
-          `❌ Please provide a search query.\nExample: /googleimg Sakura Haruka - 10`,
+          `❌ Veuillez fournir une requête de recherche.\nExemple : /googleimg Sakura Haruka - 10`,
           event.threadID,
           event.messageID
         );
@@ -45,7 +45,7 @@ module.exports = {
 
       if (data.length === 0)
         return api.sendMessage(
-          `❌ No images found for "${query}". Try a different search.`,
+          `❌ Aucune image trouvée pour "${query}". Essayez une autre recherche.`,
           event.threadID,
           event.messageID
         );
@@ -73,13 +73,13 @@ module.exports = {
 
       if (validImages.length === 0)
         return api.sendMessage(
-          `❌ Couldn't find any valid images for "${query}".`,
+          `❌ Impossible de trouver des images valides pour "${query}".`,
           event.threadID,
           event.messageID
         );
 
       await api.sendMessage(
-        { body: `✅ Here are your images for "${query}"`, attachment: validImages },
+        { body: `✅ Voici vos images pour "${query}"`, attachment: validImages },
         event.threadID,
         event.messageID
       );
@@ -89,7 +89,7 @@ module.exports = {
     } catch (error) {
       console.error("GoogleImg Error:", error.message);
       return api.sendMessage(
-        "❌ Something went wrong. Please try again later.",
+        "❌ Une erreur est survenue. Veuillez réessayer plus tard.",
         event.threadID,
         event.messageID
       );
