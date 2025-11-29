@@ -8,32 +8,31 @@ module.exports = {
     name: "v2a",
     aliases: ["video2audio"],
     version: "2.0",
-    author: "Saimx69x",
+    author: "Christus",
     countDown: 15,
     role: 0,
-    description: "Convert replied video to MP3 audio file",
+    description: "Convertir une vidéo répondue en fichier audio MP3",
     category: "media",
     guide: {
-      en: "{pn} — reply to a video to extract MP3 audio"
+      fr: "{pn} — répondre à une vidéo pour extraire l'audio MP3"
     }
   },
 
   onStart: async function ({ api, event, message }) {
     try {
-     
       if (!event.messageReply || !event.messageReply.attachments?.length)
-        return message.reply("🎥 Please reply to a video to convert it into MP3 audio.");
+        return message.reply("🎥 Veuillez répondre à une vidéo pour la convertir en audio MP3.");
 
       const attachment = event.messageReply.attachments[0];
       if (attachment.type !== "video")
-        return message.reply("⚠️ The replied content must be a video file!");
+        return message.reply("⚠️ Le contenu répondu doit être une vidéo !");
 
       const cacheDir = path.join(__dirname, "cache");
       await fs.ensureDir(cacheDir);
       const videoPath = path.join(cacheDir, `v2a_${Date.now()}.mp4`);
       const audioPath = path.join(cacheDir, `v2a_${Date.now()}.mp3`);
 
-      const convertingMsg = await message.reply("🎧 Converting video to audio... Please wait a moment ⏳");
+      const convertingMsg = await message.reply("🎧 Conversion de la vidéo en audio... Veuillez patienter ⏳");
 
       const { data } = await axios.get(attachment.url, { responseType: "arraybuffer" });
       await fs.writeFile(videoPath, Buffer.from(data));
@@ -50,7 +49,7 @@ module.exports = {
 
       await api.sendMessage(
         {
-          body: "✅ Conversion complete!\n🎵 Here's your audio:",
+          body: "✅ Conversion terminée !\n🎵 Voici votre audio :",
           attachment: fs.createReadStream(audioPath)
         },
         event.threadID,
@@ -70,7 +69,7 @@ module.exports = {
 
     } catch (err) {
       console.error(err);
-      message.reply("❌ Error: Failed to convert video to MP3.\nPlease try again later.");
+      message.reply("❌ Erreur : Impossible de convertir la vidéo en MP3.\nVeuillez réessayer plus tard.");
     }
   }
 };
