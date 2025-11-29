@@ -3,18 +3,18 @@ module.exports = {
         name: "imgbb",
         aliases: [],
         version: "1.0",
-        author: "Saimx69x",
-        category: "utility",
+        author: "Christus",
+        category: "utilitaire",
         countDown: 5,
         role: 0,
-        shortDescription: "Upload image/gif/png and get URL",
-        longDescription: "Reply to an image/gif/png will upload it to Imgbb and return a URL."
+        shortDescription: "Téléverse une image/gif/png et obtient son URL",
+        longDescription: "Répondre à une image/gif/png la téléversera sur Imgbb et renverra une URL."
     },
 
     onStart: async function ({ api, event }) {
         try {
             if (!event.messageReply || !event.messageReply.attachments || event.messageReply.attachments.length === 0) {
-                return api.sendMessage("❌ Please reply to an image, gif, or png to upload.", event.threadID, event.messageID);
+                return api.sendMessage("❌ Veuillez répondre à une image, un gif ou un png pour la téléverser.", event.threadID, event.messageID);
             }
 
             const attachment = event.messageReply.attachments[0];
@@ -25,13 +25,13 @@ module.exports = {
             const data = res.data;
 
             if (!data.status) 
-                return api.sendMessage("❌ Failed to upload image. Please try again later.", event.threadID, event.messageID);
+                return api.sendMessage("❌ Échec du téléversement de l'image. Veuillez réessayer plus tard.", event.threadID, event.messageID);
 
             return api.sendMessage(`${data.image.display_url}`, event.threadID, event.messageID);
 
         } catch (err) {
             console.error(err);
-            return api.sendMessage("❌ Something went wrong. Please try again later.", event.threadID, event.messageID);
+            return api.sendMessage("❌ Une erreur est survenue. Veuillez réessayer plus tard.", event.threadID, event.messageID);
         }
     }
 };
