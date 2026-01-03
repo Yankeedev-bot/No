@@ -31,20 +31,7 @@ module.exports = {
     try {
       const uid = event.senderID;
       let avatar = await usersData.getAvatarUrl(uid).catch(() => null);
-      if (!avatar) avatar = "https://i.imgur.com/TPHk4Qu.png";
-
-      const autoDelete = async (msgID, delay = 15000) => {
-        const countdown = [10,5,3,2,1];
-        countdown.forEach((s) => {
-          setTimeout(() => {
-            message.edit(msgID, `⏳ 𝐶𝑦𝑏𝑒𝑟𝑛𝑒𝑡𝑖𝑐 𝑠𝑢𝑝𝑝𝑟𝑒𝑠𝑠𝑖𝑜𝑛 𝑑𝑎𝑛𝑠 ${s}𝑠...`);
-          }, delay - s*1000);
-        });
-        setTimeout(async () => {
-          try { await message.unsend(msgID); } 
-          catch (err) { console.error("❌ 𝐻𝑒𝑙𝑝 𝑑𝑒𝑙𝑒𝑡𝑒 𝑒𝑟𝑟𝑜𝑟:", err.message); }
-        }, delay);
-      };
+      if (!avatar) avatar = "https://postimg.cc/SJWBhbcC.png";
 
       // --- AI Suggestion ---
       if(args[0]?.toLowerCase() === "-ai") {
@@ -71,7 +58,7 @@ module.exports = {
                   "╰━━━━━━━━━━━━━━━━━━━",
             attachment: await global.utils.getStreamFromURL(avatar)
           });
-          return autoDelete(res.messageID);
+          return;
         }
 
         const body = "📢 𝑁𝑜𝑡𝑖𝑓𝑖𝑐𝑎𝑡𝑖𝑜𝑛 𝑓𝑟𝑜𝑚 𝑎𝑑𝑚𝑖𝑛 𝑏𝑜𝑡 𝑡𝑜 𝑎𝑙𝑙 𝑐ℎ𝑎𝑡 𝑔𝑟𝑜𝑢𝑝𝑠 (𝑑𝑜 𝑛𝑜𝑡 𝑟𝑒𝑝𝑙𝑦 𝑡𝑜 𝑡ℎ𝑖𝑠 𝑚𝑒𝑠𝑠𝑎𝑔𝑒)\n" +
@@ -90,8 +77,8 @@ module.exports = {
                     "│ 𝐾𝑒𝑦𝑤𝑜𝑟𝑑: '" + keyword + "'\n" +
                     "╰━━━━━━━━━━━━━━━━━━━";
 
-        const res = await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar) });
-        return autoDelete(res.messageID);
+        await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar) });
+        return;
       }
 
       // --- Search Feature ---
@@ -105,13 +92,13 @@ module.exports = {
                       "└─━━━━━═━═━━━━━─┘\n\n" +
                       "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
                       "   ❌ 𝐼𝑁𝑃𝑈𝑇 𝐸𝑅𝑅𝑂𝑅\n" +
-                      "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
+                      "▬▬▬▬▬▬▬▬▬▬▬▬▬𝐄𝐑𝐑𝐎𝐑\n" +
                       "│ 𝑃𝑙𝑒𝑎𝑠𝑒 𝑝𝑟𝑜𝑣𝑖𝑑𝑒 𝑎 𝑠𝑒𝑎𝑟𝑐ℎ 𝑘𝑒𝑦𝑤𝑜𝑟𝑑\n" +
                       "│ 𝑈𝑠𝑎𝑔𝑒: .help -s <keyword>\n" +
                       "╰━━━━━━━━━━━━━━━━━━━";
           
-          const res = await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar) });
-          return autoDelete(res.messageID);
+          await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar) });
+          return;
         }
 
         const results = Array.from(commands.keys())
@@ -131,8 +118,8 @@ module.exports = {
                       "│ 𝑁𝑜 𝑐𝑜𝑚𝑚𝑎𝑛𝑑𝑠 𝑓𝑜𝑢𝑛𝑑 𝑓𝑜𝑟: '" + keyword + "'\n" +
                       "╰━━━━━━━━━━━━━━━━━━━";
           
-          const res = await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar) });
-          return autoDelete(res.messageID);
+          await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar) });
+          return;
         }
 
         const body = "📢 𝑁𝑜𝑡𝑖𝑓𝑖𝑐𝑎𝑡𝑖𝑜𝑛 𝑓𝑟𝑜𝑚 𝑎𝑑𝑚𝑖𝑛 𝑏𝑜𝑡 𝑡𝑜 𝑎𝑙𝑙 𝑐ℎ𝑎𝑡 𝑔𝑟𝑜𝑢𝑝𝑠 (𝑑𝑜 𝑛𝑜𝑡 𝑟𝑒𝑝𝑙𝑦 𝑡𝑜 𝑡ℎ𝑖𝑠 𝑚𝑒𝑠𝑠𝑎𝑔𝑒)\n" +
@@ -150,8 +137,8 @@ module.exports = {
                     "│ " + results.length + " 𝑐𝑜𝑚𝑚𝑎𝑛𝑑𝑠 𝑓𝑜𝑢𝑛𝑑\n" +
                     "╰━━━━━━━━━━━━━━━━━━━";
 
-        const res = await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar) });
-        return autoDelete(res.messageID);
+        await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar) });
+        return;
       }
 
       // --- Command List ---
@@ -217,7 +204,7 @@ module.exports = {
         // Footer avec statistiques
         body += "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
                 "   📊 𝑆𝑌𝑆𝑇𝐸𝑀 𝑆𝑇𝐴𝑇𝑈𝑆\n" +
-                "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
+                "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬𝐓𝐔𝐒\n" +
                 "│ ◈ 𝑇𝑜𝑡𝑎𝑙 𝐶𝑜𝑚𝑚𝑎𝑛𝑑𝑠: " + commands.size + "\n" +
                 "│ ◈ 𝐶𝑎𝑡𝑒𝑔𝑜𝑟𝑖𝑒𝑠: " + sortedCats.length + "\n" +
                 "│ ◈ 𝑆𝑦𝑠𝑡𝑒𝑚 𝑆𝑡𝑎𝑡𝑢𝑠: 𝑂𝑝𝑒𝑟𝑎𝑡𝑖𝑜𝑛𝑎𝑙\n" +
@@ -233,15 +220,15 @@ module.exports = {
                 "│   💮 𝑇𝑅Ø𝑁 𝐴𝑅Ë𝑆 𝐵Ø𝑇      │\n" +
                 "└─────────────────────────┘";
 
-        const res = await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar)});
-        return autoDelete(res.messageID);
+        await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar)});
+        return;
       }
 
       // --- Command Info ---
       const query = args[0].toLowerCase();
       const command = commands.get(query) || commands.get(aliases.get(query));
       if(!command) {
-        const res = await message.reply({ 
+        await message.reply({ 
           body: "📢 𝑁𝑜𝑡𝑖𝑓𝑖𝑐𝑎𝑡𝑖𝑜𝑛 𝑓𝑟𝑜𝑚 𝑎𝑑𝑚𝑖𝑛 𝑏𝑜𝑡 𝑡𝑜 𝑎𝑙𝑙 𝑐ℎ𝑎𝑡 𝑔𝑟𝑜𝑢𝑝𝑠 (𝑑𝑜 𝑛𝑜𝑡 𝑟𝑒𝑝𝑙𝑦 𝑡𝑜 𝑡ℎ𝑖𝑠 𝑚𝑒𝑠𝑠𝑎𝑔𝑒)\n" +
                 "────────────────\n" +
                 "┌─━━━━━═━═━━━━━─┐\n" +
@@ -255,7 +242,7 @@ module.exports = {
                 "╰━━━━━━━━━━━━━━━━━━━",
           attachment: await global.utils.getStreamFromURL(avatar)
         });
-        return autoDelete(res.messageID);
+        return;
       }
 
       const cfg = command.config || {};
@@ -294,8 +281,7 @@ module.exports = {
                   "│ ◈ .help " + toAZStyle(cfg.name.toLowerCase()) + " -r\n" +
                   "╰━━━━━━━━━━━━━━━━━━━";
 
-      const res = await message.reply({ body: card, attachment: await global.utils.getStreamFromURL(avatar)});
-      return autoDelete(res.messageID);
+      await message.reply({ body: card, attachment: await global.utils.getStreamFromURL(avatar)});
 
     } catch(err) {
       console.error("💮 TRØN ARËS BØT HELP ERROR:", err);
