@@ -170,7 +170,7 @@ const handleAIRequest = async (api, event, userInput, message, isReply = false) 
 
     let finalReply = textReply || '✅ AI Response:';
     finalReply = finalReply
-      .replace(/🎀\s*𝗦𝗵𝗶𝘇𝘂/gi, '🎀 𝗖𝗵𝗿𝗶𝘀𝘁𝘂𝘀')
+      .replace(/🎀\s*𝗦𝗵𝗶𝘇𝘂/gi, '🎀★LORD†YANKEE†HELLS★')
       .replace(/Shizu/gi, 'Christus')
       .replace(/Christuska/gi, 'Christus')
       .replace(/Aryan Chauhan/gi, 'Christus');
