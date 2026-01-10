@@ -19,7 +19,7 @@ module.exports = {
   config: {
     name: "help",
     aliases: ["menu", "commands", "hud", "interface"],
-    version: "6.0",
+    version: "6.1",
     author: "TRØN ARËS",
     countDown: 2,
     role: 0,
@@ -34,19 +34,6 @@ module.exports = {
       let avatar = await usersData.getAvatarUrl(uid).catch(() => null);
       if (!avatar) avatar = "https://i.imgur.com/TPHk4Qu.png";
 
-      const autoDelete = async (msgID, delay = 20000) => {
-        const countdown = [10,5,3,2,1];
-        countdown.forEach((s) => {
-          setTimeout(() => {
-            message.edit(msgID, `⏳ 𝑪𝒚𝒃𝒆𝒓𝒏𝒆𝒕𝒊𝒄 𝒔𝒖𝒑𝒑𝒓𝒆𝒔𝒔𝒊𝒐𝒏 𝒅𝒂𝒏𝒔 ${s}s...`);
-          }, delay - s*1000);
-        });
-        setTimeout(async () => {
-          try { await message.unsend(msgID); } 
-          catch (err) { console.error("❌ 𝐇𝐞𝐥𝐩 𝐝𝐞𝐥𝐞𝐭𝐞 𝐞𝐫𝐫𝐨𝐫:", err.message); }
-        }, delay);
-      };
-
       // --- AI Suggestion ---
       if(args[0]?.toLowerCase() === "-ai") {
         const keyword = args[1]?.toLowerCase() || "";
@@ -58,18 +45,16 @@ module.exports = {
           .slice(0,10);
 
         if(!suggestions.length) {
-          const res = await message.reply({ 
+          return message.reply({ 
             body: "╭═══✨✨✨═══╮\n│ ❌ 𝑵𝑬𝑼𝑹𝑨𝑳 𝑺𝑼𝑮𝑮𝑬𝑺𝑻𝑰𝑶𝑵𝑺 ❌\n│ 𝑵𝒐 𝒄𝒐𝒎𝒎𝒂𝒏𝒅𝒔 𝒎𝒂𝒕𝒄𝒉𝒊𝒏𝒈: '" + keyword + "'\n│ 𝑻𝒓𝒚 𝒅𝒊𝒇𝒇𝒆𝒓𝒆𝒏𝒕 𝒌𝒆𝒚𝒘𝒐𝒓𝒅𝒔\n╰═══✨✨✨✨═══╯",
             attachment: await global.utils.getStreamFromURL(avatar)
           });
-          return autoDelete(res.messageID);
         }
 
         const body = "╭═══✨✨✨═══╮\n│ ⚡ 𝑵𝑬𝑼𝑹𝑨𝑳 𝑺𝑼𝑮𝑮𝑬𝑺𝑻𝑰𝑶𝑵𝑺 ⚡\n│ 𝑲𝒆𝒚𝒘𝒐𝒓𝒅: '" + keyword + "'\n" +
                     suggestions.map(s=>`│ 🎁 ${toAZStyle(s.cmd)} (${s.match}% 𝒎𝒂𝒕𝒄𝒉)`).join("\n") + "\n╰═══✨✨✨✨═══╯";
 
-        const res = await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar) });
-        return autoDelete(res.messageID);
+        return message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar) });
       }
 
       // --- Command List ---
@@ -222,19 +207,17 @@ module.exports = {
                 "│ 🎁 .callad [message] - Contact admin\n" +
                 "╰═══✨✨✨✨═══╯";
 
-        const res = await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar)});
-        return autoDelete(res.messageID);
+        return message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar)});
       }
 
       // --- Command Info ---
       const query = args[0].toLowerCase();
       const command = commands.get(query) || commands.get(aliases.get(query));
       if(!command) {
-        const res = await message.reply({ 
+        return message.reply({ 
           body: "╭═══✨✨✨═══╮\n│ ❌ 𝑪𝑶𝑴𝑴𝑨𝑵𝑫 𝑬𝑹𝑹𝑶𝑹 ❌\n│ 𝑪𝒐𝒎𝒎𝒂𝒏𝒅 '" + query + "' 𝒏𝒐𝒕 𝒇𝒐𝒖𝒏𝒅\n│ 𝒊𝒏 𝒅𝒂𝒕𝒂𝒃𝒂𝒔𝒆\n╰═══✨✨✨✨═══╯",
           attachment: await global.utils.getStreamFromURL(avatar)
         });
-        return autoDelete(res.messageID);
       }
 
       const cfg = command.config || {};
@@ -271,12 +254,11 @@ module.exports = {
                   `│ .help ${toAZStyle(cfg.name.toLowerCase())} -r\n` +
                   "╰═══✨✨✨✨═══╯";
 
-      const res = await message.reply({ body: card, attachment: await global.utils.getStreamFromURL(avatar)});
-      return autoDelete(res.messageID);
+      return message.reply({ body: card, attachment: await global.utils.getStreamFromURL(avatar)});
 
     } catch(err) {
       console.error("TRØN ARËS HELP ERROR:", err);
-      await message.reply("╭═══✨✨✨═══╮\n│ ❌ 𝑺𝒀𝑺𝑻𝑬𝑴 𝑬𝑹𝑹𝑶𝑹 ❌\n│ " + (err.message || err).substring(0, 50) + "\n╰═══✨✨✨✨═══╯");
+      return message.reply("╭═══✨✨✨═══╮\n│ ❌ 𝑺𝒀𝑺𝑻𝑬𝑴 𝑬𝑹𝑹𝑶𝑹 ❌\n│ " + (err.message || err).substring(0, 50) + "\n╰═══✨✨✨✨═══╯");
     }
   }
 };
