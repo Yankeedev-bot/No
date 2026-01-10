@@ -18,8 +18,9 @@ function toAZStyle(text) {
 module.exports = {
   config: {
     name: "help",
+    aliases: ["menu", "commands", "hud", "interface"],
     version: "6.0",
-    author: "💮 TRØN ARËS BØT 💮",
+    author: "TRØN ARËS",
     countDown: 2,
     role: 0,
     shortDescription: { en: "𝐸𝑥𝑝𝑙𝑜𝑟𝑒 𝑇𝑅Ø𝑁 𝐴𝑅Ë𝑆 𝑐𝑦𝑏𝑒𝑟𝑛𝑒𝑡𝑖𝑐 𝑐𝑜𝑚𝑚𝑎𝑛𝑑𝑠" },
@@ -31,7 +32,20 @@ module.exports = {
     try {
       const uid = event.senderID;
       let avatar = await usersData.getAvatarUrl(uid).catch(() => null);
-      if (!avatar) avatar = "https://postimg.cc/SJWBhbcC.png";
+      if (!avatar) avatar = "https://i.imgur.com/TPHk4Qu.png";
+
+      const autoDelete = async (msgID, delay = 20000) => {
+        const countdown = [10,5,3,2,1];
+        countdown.forEach((s) => {
+          setTimeout(() => {
+            message.edit(msgID, `⏳ 𝑪𝒚𝒃𝒆𝒓𝒏𝒆𝒕𝒊𝒄 𝒔𝒖𝒑𝒑𝒓𝒆𝒔𝒔𝒊𝒐𝒏 𝒅𝒂𝒏𝒔 ${s}s...`);
+          }, delay - s*1000);
+        });
+        setTimeout(async () => {
+          try { await message.unsend(msgID); } 
+          catch (err) { console.error("❌ 𝐇𝐞𝐥𝐩 𝐝𝐞𝐥𝐞𝐭𝐞 𝐞𝐫𝐫𝐨𝐫:", err.message); }
+        }, delay);
+      };
 
       // --- AI Suggestion ---
       if(args[0]?.toLowerCase() === "-ai") {
@@ -45,121 +59,91 @@ module.exports = {
 
         if(!suggestions.length) {
           const res = await message.reply({ 
-            body: "📢 𝑁𝑜𝑡𝑖𝑓𝑖𝑐𝑎𝑡𝑖𝑜𝑛 𝑓𝑟𝑜𝑚 𝑎𝑑𝑚𝑖𝑛 𝑏𝑜𝑡 𝑡𝑜 𝑎𝑙𝑙 𝑐ℎ𝑎𝑡 𝑔𝑟𝑜𝑢𝑝𝑠 (𝑑𝑜 𝑛𝑜𝑡 𝑟𝑒𝑝𝑙𝑦 𝑡𝑜 𝑡ℎ𝑖𝑠 𝑚𝑒𝑠𝑠𝑎𝑔𝑒)\n" +
-                  "────────────────\n" +
-                  "┌─━━━━━═━═━━━━━─┐\n" +
-                  "   ⚡ 𝑁𝐸𝑈𝑅𝐴𝐿 𝑆𝑈𝐺𝐺𝐸𝑆𝑇𝐼𝑂𝑁𝑆 ⚡\n" +
-                  "└─━━━━━═━═━━━━━─┘\n\n" +
-                  "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                  "   ❌ 𝐴𝑁𝐴𝐿𝑌𝑆𝐼𝑆 𝑅𝐸𝑆𝑈𝐿𝑇𝑆\n" +
-                  "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                  "│ 𝑁𝑜 𝑐𝑜𝑚𝑚𝑎𝑛𝑑𝑠 𝑚𝑎𝑡𝑐ℎ𝑖𝑛𝑔: '" + keyword + "'\n" +
-                  "│ 𝑇𝑟𝑦 𝑑𝑖𝑓𝑓𝑒𝑟𝑒𝑛𝑡 𝑘𝑒𝑦𝑤𝑜𝑟𝑑𝑠\n" +
-                  "╰━━━━━━━━━━━━━━━━━━━",
+            body: "╭═══✨✨✨═══╮\n│ ❌ 𝑵𝑬𝑼𝑹𝑨𝑳 𝑺𝑼𝑮𝑮𝑬𝑺𝑻𝑰𝑶𝑵𝑺 ❌\n│ 𝑵𝒐 𝒄𝒐𝒎𝒎𝒂𝒏𝒅𝒔 𝒎𝒂𝒕𝒄𝒉𝒊𝒏𝒈: '" + keyword + "'\n│ 𝑻𝒓𝒚 𝒅𝒊𝒇𝒇𝒆𝒓𝒆𝒏𝒕 𝒌𝒆𝒚𝒘𝒐𝒓𝒅𝒔\n╰═══✨✨✨✨═══╯",
             attachment: await global.utils.getStreamFromURL(avatar)
           });
-          return;
+          return autoDelete(res.messageID);
         }
 
-        const body = "📢 𝑁𝑜𝑡𝑖𝑓𝑖𝑐𝑎𝑡𝑖𝑜𝑛 𝑓𝑟𝑜𝑚 𝑎𝑑𝑚𝑖𝑛 𝑏𝑜𝑡 𝑡𝑜 𝑎𝑙𝑙 𝑐ℎ𝑎𝑡 𝑔𝑟𝑜𝑢𝑝𝑠 (𝑑𝑜 𝑛𝑜𝑡 𝑟𝑒𝑝𝑙𝑦 𝑡𝑜 𝑡ℎ𝑖𝑠 𝑚𝑒𝑠𝑠𝑎𝑔𝑒)\n" +
-                    "────────────────\n" +
-                    "┌─━━━━━═━═━━━━━─┐\n" +
-                    "   ⚡ 𝑁𝐸𝑈𝑅𝐴𝐿 𝑆𝑈𝐺𝐺𝐸𝑆𝑇𝐼𝑂𝑁𝑆 ⚡\n" +
-                    "└─━━━━━═━═━━━━━─┘\n\n" +
-                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                    "   🧠 𝐴𝐼 𝑃𝑅𝑂𝑇𝑂𝐶𝑂𝐿𝑆\n" +
-                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n" +
-                    suggestions.map(s=>`◈ ${toAZStyle(s.cmd)} (${s.match}% 𝑚𝑎𝑡𝑐ℎ)`).join("\n") + "\n\n" +
-                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                    "   📊 𝐴𝑁𝐴𝐿𝑌𝑆𝐼𝑆 𝐶𝑂𝑀𝑃𝐿𝐸𝑇𝐸\n" +
-                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                    "│ " + suggestions.length + " 𝑟𝑒𝑠𝑢𝑙𝑡𝑠 𝑓𝑜𝑢𝑛𝑑\n" +
-                    "│ 𝐾𝑒𝑦𝑤𝑜𝑟𝑑: '" + keyword + "'\n" +
-                    "╰━━━━━━━━━━━━━━━━━━━";
+        const body = "╭═══✨✨✨═══╮\n│ ⚡ 𝑵𝑬𝑼𝑹𝑨𝑳 𝑺𝑼𝑮𝑮𝑬𝑺𝑻𝑰𝑶𝑵𝑺 ⚡\n│ 𝑲𝒆𝒚𝒘𝒐𝒓𝒅: '" + keyword + "'\n" +
+                    suggestions.map(s=>`│ 🎁 ${toAZStyle(s.cmd)} (${s.match}% 𝒎𝒂𝒕𝒄𝒉)`).join("\n") + "\n╰═══✨✨✨✨═══╯";
 
-        await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar) });
-        return;
-      }
-
-      // --- Search Feature ---
-      if(args[0]?.toLowerCase() === "-s") {
-        const keyword = args.slice(1).join(" ").toLowerCase();
-        if (!keyword) {
-          const body = "📢 𝑁𝑜𝑡𝑖𝑓𝑖𝑐𝑎𝑡𝑖𝑜𝑛 𝑓𝑟𝑜𝑚 𝑎𝑑𝑚𝑖𝑛 𝑏𝑜𝑡 𝑡𝑜 𝑎𝑙𝑙 𝑐ℎ𝑎𝑡 𝑔𝑟𝑜𝑢𝑝𝑠 (𝑑𝑜 𝑛𝑜𝑡 𝑟𝑒𝑝𝑙𝑦 𝑡𝑜 𝑡ℎ𝑖𝑠 𝑚𝑒𝑠𝑠𝑎𝑔𝑒)\n" +
-                      "────────────────\n" +
-                      "┌─━━━━━═━═━━━━━─┐\n" +
-                      "   ⚡ 𝐶𝑌𝐵𝐸𝑅 𝑆𝐸𝐴𝑅𝐶𝐻 ⚡\n" +
-                      "└─━━━━━═━═━━━━━─┘\n\n" +
-                      "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                      "   ❌ 𝐼𝑁𝑃𝑈𝑇 𝐸𝑅𝑅𝑂𝑅\n" +
-                      "▬▬▬▬▬▬▬▬▬▬▬▬▬𝐄𝐑𝐑𝐎𝐑\n" +
-                      "│ 𝑃𝑙𝑒𝑎𝑠𝑒 𝑝𝑟𝑜𝑣𝑖𝑑𝑒 𝑎 𝑠𝑒𝑎𝑟𝑐ℎ 𝑘𝑒𝑦𝑤𝑜𝑟𝑑\n" +
-                      "│ 𝑈𝑠𝑎𝑔𝑒: .help -s <keyword>\n" +
-                      "╰━━━━━━━━━━━━━━━━━━━";
-          
-          await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar) });
-          return;
-        }
-
-        const results = Array.from(commands.keys())
-          .filter(cmd => cmd.toLowerCase().includes(keyword))
-          .sort()
-          .slice(0, 15);
-
-        if (!results.length) {
-          const body = "📢 𝑁𝑜𝑡𝑖𝑓𝑖𝑐𝑎𝑡𝑖𝑜𝑛 𝑓𝑟𝑜𝑚 𝑎𝑑𝑚𝑖𝑛 𝑏𝑜𝑡 𝑡𝑜 𝑎𝑙𝑙 𝑐ℎ𝑎𝑡 𝑔𝑟𝑜𝑢𝑝𝑠 (𝑑𝑜 𝑛𝑜𝑡 𝑟𝑒𝑝𝑙𝑦 𝑡𝑜 𝑡ℎ𝑖𝑠 𝑚𝑒𝑠𝑠𝑎𝑔𝑒)\n" +
-                      "────────────────\n" +
-                      "┌─━━━━━═━═━━━━━─┐\n" +
-                      "   ⚡ 𝐶𝑌𝐵𝐸𝑅 𝑆𝐸𝐴𝑅𝐶𝐻 ⚡\n" +
-                      "└─━━━━━═━═━━━━━─┘\n\n" +
-                      "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                      "   ❌ 𝑁𝑂 𝑅𝐸𝑆𝑈𝐿𝑇𝑆\n" +
-                      "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                      "│ 𝑁𝑜 𝑐𝑜𝑚𝑚𝑎𝑛𝑑𝑠 𝑓𝑜𝑢𝑛𝑑 𝑓𝑜𝑟: '" + keyword + "'\n" +
-                      "╰━━━━━━━━━━━━━━━━━━━";
-          
-          await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar) });
-          return;
-        }
-
-        const body = "📢 𝑁𝑜𝑡𝑖𝑓𝑖𝑐𝑎𝑡𝑖𝑜𝑛 𝑓𝑟𝑜𝑚 𝑎𝑑𝑚𝑖𝑛 𝑏𝑜𝑡 𝑡𝑜 𝑎𝑙𝑙 𝑐ℎ𝑎𝑡 𝑔𝑟𝑜𝑢𝑝𝑠 (𝑑𝑜 𝑛𝑜𝑡 𝑟𝑒𝑝𝑙𝑦 𝑡𝑜 𝑡ℎ𝑖𝑠 𝑚𝑒𝑠𝑠𝑎𝑔𝑒)\n" +
-                    "────────────────\n" +
-                    "┌─━━━━━═━═━━━━━─┐\n" +
-                    "   ⚡ 𝐶𝑌𝐵𝐸𝑅 𝑆𝐸𝐴𝑅𝐶𝐻 ⚡\n" +
-                    "└─━━━━━═━═━━━━━─┘\n\n" +
-                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                    "   🔍 𝑅𝐸𝑆𝑈𝐿𝑇𝑆 𝐹𝑂𝑅: \"" + keyword + "\"\n" +
-                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n" +
-                    results.map(cmd => `◈ ${toAZStyle(cmd)}`).join("\n") + "\n\n" +
-                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                    "   📊 𝑆𝐸𝐴𝑅𝐶𝐻 𝑆𝑇𝐴𝑇𝑆\n" +
-                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                    "│ " + results.length + " 𝑐𝑜𝑚𝑚𝑎𝑛𝑑𝑠 𝑓𝑜𝑢𝑛𝑑\n" +
-                    "╰━━━━━━━━━━━━━━━━━━━";
-
-        await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar) });
-        return;
+        const res = await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar) });
+        return autoDelete(res.messageID);
       }
 
       // --- Command List ---
       if(!args || args.length === 0) {
-        const notificationHeader = "📢 𝑁𝑜𝑡𝑖𝑓𝑖𝑐𝑎𝑡𝑖𝑜𝑛 𝑓𝑟𝑜𝑚 𝑎𝑑𝑚𝑖𝑛 𝑏𝑜𝑡 𝑡𝑜 𝑎𝑙𝑙 𝑐ℎ𝑎𝑡 𝑔𝑟𝑜𝑢𝑝𝑠 (𝑑𝑜 𝑛𝑜𝑡 𝑟𝑒𝑝𝑙𝑦 𝑡𝑜 𝑡ℎ𝑖𝑠 𝑚𝑒𝑠𝑠𝑎𝑔𝑒)\n────────────────\n𝐻𝑒𝑙𝑙𝑜\n\n";
+        const notificationHeader = "📢 𝗡𝗼𝘁𝗶𝗳𝗶𝗰𝗮𝘁𝗶𝗼𝗻 𝗳𝗿𝗼𝗺 𝗮𝗱𝗺𝗶𝗻 𝗯𝗼𝘁 𝘁𝗼 𝗮𝗹𝗹 𝗰𝗵𝗮𝘁 𝗴𝗿𝗼𝘂𝗽𝘀 (𝗱𝗼 𝗻𝗼𝘁 𝗿𝗲𝗽𝗹𝘆 𝘁𝗼 𝘁𝗵𝗶𝘀 𝗺𝗲𝘀𝘀𝗮𝗴𝗲)\n────────────────\n𝗛𝗲𝗹𝗹𝗼\n\n";
         
+        // En-tête personnalisé
         let body = notificationHeader + 
-                  "┌─━━━━━═━═━━━━━═━═━━━━━─┐\n" +
-                  "   ⚡ 💮 𝑇𝑅Ø𝑁 𝐴𝑅Ë𝑆 𝐵Ø𝑇 𝐶𝑌𝐵𝐸𝑅𝑁𝐸𝑇𝐼𝐶 𝐼𝑁𝑇𝐸𝑅𝐹𝐴𝐶𝐸 ⚡\n" +
-                  "└─━━━━━═━═━━━━━═━═━━━━━─┘\n\n";
+                  "╭═══✨✨✨═══╮\n" +
+                  "│ 🎄💮 *TRØN ARËS MENU* 💮🎄\n" +
+                  "│ Usuario: " + toAZStyle(event.senderID) + "\n" +
+                  "│ Bot: *TRØN ARËS BØT*\n" +
+                  "│ Creador: *TRØN ARËS SYSTEM*\n" +
+                  "╰═══✨✨✨✨═══╯\n\n";
         
         const categories = {};
-        const categoryEmojis = {
-          'admin': '🔧', 'ai': '🤖', 'ai-generated': '🌀', 'ai-image': '🎨',
-          'box chat': '💬', 'config': '⚙️', 'contacts admin': '📞',
-          'custom': '🛠️', 'demo': '📂', 'economy': '💎', 'fun': '🎉',
-          'game': '🎮', 'image': '🌌', 'info': '📌', 'market': '🏪',
-          'media': '📥', 'music': '🎵', 'nsfw': '🔞', 'other': '🌐',
-          'owner': '👑', 'premium': '🌟', 'rank': '🏆', 'software': '📱',
-          'system': '🖥️', 'tools': '🔧', 'tts': '🗣️', 'uploader': '📤',
-          'utility': '🧰', 'wiki': '📖', 'xudlingpong': '⚡'
+        const categoryOrder = [
+          'admin', 'ai', 'ai-generated', 'ai-image', 'ai image-edit',
+          'anime', 'box chat', 'chat', 'config', 'contacts admin',
+          'custom', 'developer', 'discussion de groupe', 'economy',
+          'fun', 'game', 'groupe', 'générateur d\'image', 'générateur d\'image 2',
+          'générateur d\'images', 'ia', 'image', 'info', 'information',
+          'jeu', 'logiciel', 'love', 'media', 'média', 'nsfw',
+          'owner', 'propriétaire', 'rank', 'ranking', 'system',
+          'système', 'tools', 'utilitaire', 'utility', 'wiki',
+          'market', 'software', 'tts', 'uploader', 'other'
+        ];
+
+        const categoryDisplayNames = {
+          'admin': '🔧 *ADMIN*',
+          'ai': '🤖 *AI*',
+          'ai-generated': '🌀 *AI GENERATED*',
+          'ai-image': '🎨 *AI IMAGE*',
+          'ai image-edit': '◈ *AI IMAGE-EDIT*',
+          'anime': '◈ *ANIME*',
+          'box chat': '💬 *BOX CHAT*',
+          'chat': '◈ *CHAT*',
+          'config': '⚙️ *CONFIG*',
+          'contacts admin': '📞 *CONTACTS ADMIN*',
+          'custom': '🛠️ *CUSTOM*',
+          'developer': '◈ *DEVELOPER*',
+          'discussion de groupe': '◈ *DISCUSSION DE GROUPE*',
+          'economy': '💎 *ECONOMY*',
+          'fun': '🎉 *FUN*',
+          'game': '🎮 *GAME*',
+          'groupe': '◈ *GROUPE*',
+          'générateur d\'image': '◈ *GÉNÉRATEUR D\'IMAGE*',
+          'générateur d\'image 2': '◈ *GÉNÉRATEUR D\'IMAGE 2*',
+          'générateur d\'images': '◈ *GÉNÉRATEUR D\'IMAGES*',
+          'ia': '◈ *IA*',
+          'image': '🌌 *IMAGE*',
+          'info': '📌 *INFO*',
+          'information': '◈ *INFORMATION*',
+          'jeu': '◈ *JEU*',
+          'logiciel': '◈ *LOGICIEL*',
+          'love': '◈ *LOVE*',
+          'media': '📥 *MEDIA*',
+          'média': '◈ *MÉDIA*',
+          'nsfw': '🔞 *NSFW*',
+          'owner': '👑 *OWNER*',
+          'propriétaire': '◈ *PROPRIÉTAIRE*',
+          'rank': '🏆 *RANK*',
+          'ranking': '◈ *RANKING*',
+          'system': '🖥️ *SYSTEM*',
+          'système': '◈ *SYSTÈME*',
+          'tools': '🔧 *TOOLS*',
+          'utilitaire': '◈ *UTILITAIRE*',
+          'utility': '🧰 *UTILITY*',
+          'wiki': '📖 *WIKI*',
+          'market': '◈ *𝗠𝗮𝗿𝗸𝗲𝘁*',
+          'software': '📱 *SOFTWARE*',
+          'tts': '🔊 *TTS*',
+          'uploader': '📤 *UPLOADER*',
+          'other': '🌐 *OTHER*'
         };
 
         for(let [name, cmd] of commands) {
@@ -168,134 +152,131 @@ module.exports = {
           categories[cat].push(name);
         }
 
-        // Afficher les catégories principales dans un style cyberpunk
-        const sortedCats = Object.keys(categories).sort();
-        for(const cat of sortedCats) {
-          const emoji = categoryEmojis[cat] || '◈';
-          const catName = cat.toUpperCase().replace('-', ' ');
-          
-          body += `┏━━━━━━━━━━━━━━━━━━━━━━━┓\n`;
-          body += `┃  ${emoji} ${toAZStyle(catName)}\n`;
-          body += `┣━━━━━━━━━━━━━━━━━━━━━━━┫\n`;
-          
-          const sortedCommands = categories[cat].sort();
-          // Organiser en colonnes (3 colonnes max)
-          const maxPerColumn = Math.ceil(sortedCommands.length / 3);
-          const columns = [];
-          
-          for(let i = 0; i < 3; i++) {
-            columns.push(sortedCommands.slice(i * maxPerColumn, (i + 1) * maxPerColumn));
-          }
-          
-          const maxRows = Math.max(...columns.map(col => col.length));
-          for(let row = 0; row < maxRows; row++) {
-            let rowText = "┃ ";
-            for(let col = 0; col < columns.length; col++) {
-              if(columns[col][row]) {
-                rowText += `◈ ${toAZStyle(columns[col][row])}`;
-                if(col < columns.length - 1) rowText += "    ";
-              }
+        // Afficher les catégories dans l'ordre défini
+        for(const cat of categoryOrder) {
+          if(categories[cat] && categories[cat].length > 0) {
+            const displayName = categoryDisplayNames[cat] || `◈ *${cat.toUpperCase()}*`;
+            const sortedCommands = categories[cat].sort();
+            
+            // Calculer le nombre de lignes nécessaires (max 10 commandes par bloc)
+            const commandChunks = [];
+            for(let i = 0; i < sortedCommands.length; i += 10) {
+              commandChunks.push(sortedCommands.slice(i, i + 10));
             }
-            body += `${rowText}\n`;
+            
+            for(const chunk of commandChunks) {
+              body += "╭═══✨✨✨═══╮\n" +
+                      `│ ${displayName}\n`;
+              
+              chunk.forEach(cmd => {
+                body += `│ 🎁 ${toAZStyle(cmd)}\n`;
+              });
+              
+              body += "╰═══✨✨✨✨═══╯\n\n";
+            }
+            
+            // Supprimer la catégorie après l'avoir affichée pour éviter les doublons
+            delete categories[cat];
           }
-          body += `┗━━━━━━━━━━━━━━━━━━━━━━━┛\n\n`;
         }
 
-        // Footer avec statistiques
-        body += "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                "   📊 𝑆𝑌𝑆𝑇𝐸𝑀 𝑆𝑇𝐴𝑇𝑈𝑆\n" +
-                "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬𝐓𝐔𝐒\n" +
-                "│ ◈ 𝑇𝑜𝑡𝑎𝑙 𝐶𝑜𝑚𝑚𝑎𝑛𝑑𝑠: " + commands.size + "\n" +
-                "│ ◈ 𝐶𝑎𝑡𝑒𝑔𝑜𝑟𝑖𝑒𝑠: " + sortedCats.length + "\n" +
-                "│ ◈ 𝑆𝑦𝑠𝑡𝑒𝑚 𝑆𝑡𝑎𝑡𝑢𝑠: 𝑂𝑝𝑒𝑟𝑎𝑡𝑖𝑜𝑛𝑎𝑙\n" +
-                "╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
-                "┌─────────────────────────┐\n" +
-                "│  🎯 𝑄𝑈𝐼𝐶𝐾 𝑅𝐸𝐹𝐸𝑅𝐸𝑁𝐶𝐸      │\n" +
-                "├─────────────────────────┤\n" +
-                "│   ◈ .help <command>     │\n" +
-                "│   ◈ .help -ai <keyword> │\n" +
-                "│   ◈ .help -s <search>   │\n" +
-                "│   ◈ .callad [message]   │\n" +
-                "│                           │\n" +
-                "│   💮 𝑇𝑅Ø𝑁 𝐴𝑅Ë𝑆 𝐵Ø𝑇      │\n" +
-                "└─────────────────────────┘";
+        // Afficher les catégories restantes
+        for(const cat in categories) {
+          if(categories[cat].length > 0) {
+            const displayName = categoryDisplayNames[cat] || `◈ *${cat.toUpperCase()}*`;
+            const sortedCommands = categories[cat].sort();
+            
+            const commandChunks = [];
+            for(let i = 0; i < sortedCommands.length; i += 10) {
+              commandChunks.push(sortedCommands.slice(i, i + 10));
+            }
+            
+            for(const chunk of commandChunks) {
+              body += "╭═══✨✨✨═══╮\n" +
+                      `│ ${displayName}\n`;
+              
+              chunk.forEach(cmd => {
+                body += `│ 🎁 ${toAZStyle(cmd)}\n`;
+              });
+              
+              body += "╰═══✨✨✨✨═══╯\n\n";
+            }
+          }
+        }
 
-        await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar)});
-        return;
+        // Statistiques finales
+        const totalCommands = commands.size;
+        const totalCategories = Object.keys(categories).length;
+        
+        body += "╭═══✨✨✨═══╮\n" +
+                "│ ⚡ *TRØN ARËS CYBERNETIC SYSTEM* ⚡\n" +
+                `│ 📊 Total Commands: ${totalCommands}\n` +
+                `│ 📂 Categories: ${totalCategories}\n` +
+                "│ ⚡ Status: Operational\n" +
+                "│ 🎀 TRØN ARËS is proud of you.\n" +
+                "╰═══✨✨✨✨═══╯\n\n" +
+                "╭═══✨✨✨═══╮\n" +
+                "│ 🎯 *QUICK REFERENCE*\n" +
+                "│ 🎁 .help <command> - Command info\n" +
+                "│ 🎁 .help -ai <keyword> - AI suggestions\n" +
+                "│ 🎁 .callad [message] - Contact admin\n" +
+                "╰═══✨✨✨✨═══╯";
+
+        const res = await message.reply({ body, attachment: await global.utils.getStreamFromURL(avatar)});
+        return autoDelete(res.messageID);
       }
 
       // --- Command Info ---
       const query = args[0].toLowerCase();
       const command = commands.get(query) || commands.get(aliases.get(query));
       if(!command) {
-        await message.reply({ 
-          body: "📢 𝑁𝑜𝑡𝑖𝑓𝑖𝑐𝑎𝑡𝑖𝑜𝑛 𝑓𝑟𝑜𝑚 𝑎𝑑𝑚𝑖𝑛 𝑏𝑜𝑡 𝑡𝑜 𝑎𝑙𝑙 𝑐ℎ𝑎𝑡 𝑔𝑟𝑜𝑢𝑝𝑠 (𝑑𝑜 𝑛𝑜𝑡 𝑟𝑒𝑝𝑙𝑦 𝑡𝑜 𝑡ℎ𝑖𝑠 𝑚𝑒𝑠𝑠𝑎𝑔𝑒)\n" +
-                "────────────────\n" +
-                "┌─━━━━━═━═━━━━━─┐\n" +
-                "   ⚡ 𝐶𝑂𝑀𝑀𝐴𝑁𝐷 𝐴𝑁𝐴𝐿𝑌𝑆𝐼𝑆 ⚡\n" +
-                "└─━━━━━═━═━━━━━─┘\n\n" +
-                "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                "   ❌ 𝐸𝑅𝑅𝑂𝑅 𝑅𝐸𝑃𝑂𝑅𝑇\n" +
-                "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                "│ 𝐶𝑜𝑚𝑚𝑎𝑛𝑑 '" + query + "' 𝑛𝑜𝑡 𝑓𝑜𝑢𝑛𝑑\n" +
-                "│ 𝑖𝑛 𝑑𝑎𝑡𝑎𝑏𝑎𝑠𝑒\n" +
-                "╰━━━━━━━━━━━━━━━━━━━",
+        const res = await message.reply({ 
+          body: "╭═══✨✨✨═══╮\n│ ❌ 𝑪𝑶𝑴𝑴𝑨𝑵𝑫 𝑬𝑹𝑹𝑶𝑹 ❌\n│ 𝑪𝒐𝒎𝒎𝒂𝒏𝒅 '" + query + "' 𝒏𝒐𝒕 𝒇𝒐𝒖𝒏𝒅\n│ 𝒊𝒏 𝒅𝒂𝒕𝒂𝒃𝒂𝒔𝒆\n╰═══✨✨✨✨═══╯",
           attachment: await global.utils.getStreamFromURL(avatar)
         });
-        return;
+        return autoDelete(res.messageID);
       }
 
       const cfg = command.config || {};
-      const roleMap = {0:"🟢 𝐿𝐸𝑉𝐸𝐿 0 (𝐴𝑙𝑙 𝑈𝑠𝑒𝑟𝑠)", 1:"🟡 𝐿𝐸𝑉𝐸𝐿 1 (𝐺𝑟𝑜𝑢𝑝 𝐴𝑑𝑚𝑖𝑛𝑠)", 2:"🔴 𝐿𝐸𝑉𝐸𝐿 2 (𝐵𝑜𝑡 𝐴𝑑𝑚𝑖𝑛𝑠)"};
-      const aliasesList = Array.isArray(cfg.aliases) && cfg.aliases.length ? cfg.aliases.map(a=>toAZStyle(a)).join(" | ") : "𝑁𝑜𝑛𝑒";
-      const desc = cfg.longDescription?.en || cfg.shortDescription?.en || "𝑁𝑜 𝑑𝑒𝑠𝑐𝑟𝑖𝑝𝑡𝑖𝑜𝑛.";
+      const roleMap = {0:"🟢 LEVEL 0 (All Users)", 1:"🟡 LEVEL 1 (Group Admins)", 2:"🔴 LEVEL 2 (Bot Admin)"};
+      const aliasesList = Array.isArray(cfg.aliases) && cfg.aliases.length ? cfg.aliases.map(a=>toAZStyle(a)).join(" | ") : "𝑵𝒐𝒏𝒆";
+      const desc = cfg.longDescription?.en || cfg.shortDescription?.en || "𝑵𝒐 𝒅𝒆𝒔𝒄𝒓𝒊𝒑𝒕𝒊𝒐𝒏.";
       const usage = cfg.guide?.en || cfg.name;
 
-      const card = "📢 𝑁𝑜𝑡𝑖𝑓𝑖𝑐𝑎𝑡𝑖𝑜𝑛 𝑓𝑟𝑜𝑚 𝑎𝑑𝑚𝑖𝑛 𝑏𝑜𝑡 𝑡𝑜 𝑎𝑙𝑙 𝑐ℎ𝑎𝑡 𝑔𝑟𝑜𝑢𝑝𝑠 (𝑑𝑜 𝑛𝑜𝑡 𝑟𝑒𝑝𝑙𝑦 𝑡𝑜 𝑡ℎ𝑖𝑠 𝑚𝑒𝑠𝑠𝑎𝑔𝑒)\n" +
-                  "────────────────\n" +
-                  "┌─━━━━━═━═━━━━━─┐\n" +
-                  "   ⚡ 𝐶𝑂𝑀𝑀𝐴𝑁𝐷 𝐴𝑁𝐴𝐿𝑌𝑆𝐼𝑆 ⚡\n" +
-                  "└─━━━━━═━═━━━━━─┘\n\n" +
-                  "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                  "   🛰️ 𝑃𝑅𝑂𝑇𝑂𝐶𝑂𝐿 𝐷𝐴𝑇𝐴\n" +
-                  "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n" +
-                  "◈ 𝐼𝐷𝐸𝑁𝑇𝐼𝐹𝐼𝐸𝑅: " + toAZStyle(cfg.name) + "\n" +
-                  "◈ 𝐷𝐸𝑆𝐶𝑅𝐼𝑃𝑇𝐼𝑂𝑁: " + desc + "\n" +
-                  "◈ 𝐶𝐴𝑇𝐸𝐺𝑂𝑅𝑌: " + (cfg.category || "𝑀𝑖𝑠𝑐") + "\n" +
-                  "◈ 𝐴𝐿𝐼𝐴𝑆 𝑃𝑅𝑂𝑇𝑂𝐶𝑂𝐿𝑆: " + aliasesList + "\n" +
-                  "◈ 𝑆𝐸𝐶𝑈𝑅𝐼𝑇𝑌 𝐿𝐸𝑉𝐸𝐿: " + (roleMap[cfg.role] || "𝑈𝑛𝑘𝑛𝑜𝑤𝑛") + "\n" +
-                  "◈ 𝐶𝑂𝑂𝐿𝐷𝑂𝑊𝑁: " + (cfg.countDown || 1) + "s\n" +
-                  "◈ 𝑉𝐸𝑅𝑆𝐼𝑂𝑁: " + (cfg.version || "1.0") + "\n" +
-                  "◈ 𝐷𝐸𝑉𝐸𝐿𝑂𝑃𝐸𝑅: " + (cfg.author || "𝑈𝑛𝑘𝑛𝑜𝑤𝑛") + "\n\n" +
-                  "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                  "   📖 𝐸𝑋𝐸𝐶𝑈𝑇𝐼𝑂𝑁 𝑆𝑌𝑁𝑇𝐴𝑋\n" +
-                  "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                  "│ ." + toAZStyle(usage) + "\n" +
-                  "╰━━━━━━━━━━━━━━━━━━━\n\n" +
-                  "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                  "   ⚡ 𝑂𝑃𝑇𝐼𝑂𝑁𝑆\n" +
-                  "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                  "│ ◈ .help " + toAZStyle(cfg.name.toLowerCase()) + " -u\n" +
-                  "│ ◈ .help " + toAZStyle(cfg.name.toLowerCase()) + " -i\n" +
-                  "│ ◈ .help " + toAZStyle(cfg.name.toLowerCase()) + " -a\n" +
-                  "│ ◈ .help " + toAZStyle(cfg.name.toLowerCase()) + " -r\n" +
-                  "╰━━━━━━━━━━━━━━━━━━━";
+      const card = "╭═══✨✨✨═══╮\n" +
+                  "│ ⚡ 𝑪𝑶𝑴𝑴𝑨𝑵𝑫 𝑰𝑵𝑭𝑶𝑹𝑴𝑨𝑻𝑰𝑶𝑵 ⚡\n" +
+                  `│ 🎁 ${toAZStyle(cfg.name)}\n` +
+                  "╰═══✨✨✨✨═══╯\n\n" +
+                  "╭═══✨✨✨═══╮\n" +
+                  "│ 📝 *DESCRIPTION*\n" +
+                  `│ ${desc.substring(0, 60)}${desc.length > 60 ? '...' : ''}\n` +
+                  "╰═══✨✨✨✨═══╯\n\n" +
+                  "╭═══✨✨✨═══╮\n" +
+                  `│ 📂 Category: ${cfg.category || "Misc"}\n` +
+                  `│ 🔤 Aliases: ${aliasesList}\n` +
+                  `│ 🛡️ Role: ${roleMap[cfg.role] || "Unknown"}\n` +
+                  `│ ⏱️ Cooldown: ${cfg.countDown || 1}s\n` +
+                  `│ 🚀 Version: ${cfg.version || "1.0"}\n` +
+                  `│ 👨‍💻 Author: ${cfg.author || "Unknown"}\n` +
+                  "╰═══✨✨✨✨═══╯\n\n" +
+                  "╭═══✨✨✨═══╮\n" +
+                  "│ 💡 *USAGE*\n" +
+                  `│ .${toAZStyle(usage)}\n` +
+                  "╰═══✨✨✨✨═══╯\n\n" +
+                  "╭═══✨✨✨═══╮\n" +
+                  "│ 🔧 *OPTIONS*\n" +
+                  `│ .help ${toAZStyle(cfg.name.toLowerCase())} -u\n` +
+                  `│ .help ${toAZStyle(cfg.name.toLowerCase())} -i\n` +
+                  `│ .help ${toAZStyle(cfg.name.toLowerCase())} -a\n` +
+                  `│ .help ${toAZStyle(cfg.name.toLowerCase())} -r\n` +
+                  "╰═══✨✨✨✨═══╯";
 
-      await message.reply({ body: card, attachment: await global.utils.getStreamFromURL(avatar)});
+      const res = await message.reply({ body: card, attachment: await global.utils.getStreamFromURL(avatar)});
+      return autoDelete(res.messageID);
 
     } catch(err) {
-      console.error("💮 TRØN ARËS BØT HELP ERROR:", err);
-      const errorMsg = "📢 𝑁𝑜𝑡𝑖𝑓𝑖𝑐𝑎𝑡𝑖𝑜𝑛 𝑓𝑟𝑜𝑚 𝑎𝑑𝑚𝑖𝑛 𝑏𝑜𝑡 𝑡𝑜 𝑎𝑙𝑙 𝑐ℎ𝑎𝑡 𝑔𝑟𝑜𝑢𝑝𝑠 (𝑑𝑜 𝑛𝑜𝑡 𝑟𝑒𝑝𝑙𝑦 𝑡𝑜 𝑡ℎ𝑖𝑠 𝑚𝑒𝑠𝑠𝑎𝑔𝑒)\n" +
-                      "────────────────\n" +
-                      "┌─━━━━━═━═━━━━━─┐\n" +
-                      "   ⚡ 𝑆𝑌𝑆𝑇𝐸𝑀 𝐸𝑅𝑅𝑂𝑅 ⚡\n" +
-                      "└─━━━━━═━═━━━━━─┘\n\n" +
-                      "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                      "   ❌ 𝐸𝑅𝑅𝑂𝑅\n" +
-                      "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                      "│ " + (err.message || err) + "\n" +
-                      "╰━━━━━━━━━━━━━━━━━━━";
-      await message.reply(errorMsg);
+      console.error("TRØN ARËS HELP ERROR:", err);
+      await message.reply("╭═══✨✨✨═══╮\n│ ❌ 𝑺𝒀𝑺𝑻𝑬𝑴 𝑬𝑹𝑹𝑶𝑹 ❌\n│ " + (err.message || err).substring(0, 50) + "\n╰═══✨✨✨✨═══╯");
     }
   }
 };
