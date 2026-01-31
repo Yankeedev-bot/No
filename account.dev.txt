@@ -26,12 +26,12 @@
         "session": false,
         "firstPartyDomain": "",
         "partitionKey": null,
-        "expirationDate": 1803163302.875,
+        "expirationDate": 1804445812.247,
         "storeId": null
     },
     {
         "name": "fr",
-        "value": "1lfSm36ZQhhCsOArf.AWdvSLYRXzFq8ij7IqOtTNF_kRlESPE7lNTV1ah8vW7ANo7WjZE.BpYxsZ..AAA.0.0.BpfhPs.AWe2mmFfQUl-A8IzrfWuj_Wddj8",
+        "value": "1lfSm36ZQhhCsOArf.AWdtQhN3si0fBJG3dWabk9k5XUXK_TPIzAzB7zzpzIZoznezMd4.BpYxsZ..AAA.0.0.BpfoHp.AWdFAZYJtaWzydiDFUSJB0fqaek",
         "domain": ".facebook.com",
         "hostOnly": false,
         "path": "/",
@@ -41,7 +41,7 @@
         "session": false,
         "firstPartyDomain": "",
         "partitionKey": null,
-        "expirationDate": 1777646316.658,
+        "expirationDate": 1777674471.979,
         "storeId": null
     },
     {
@@ -105,6 +105,20 @@
         "storeId": null
     },
     {
+        "name": "m_pixel_ratio",
+        "value": "1",
+        "domain": ".facebook.com",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": false,
+        "sameSite": null,
+        "session": true,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "storeId": null
+    },
+    {
         "name": "c_user",
         "value": "61586277254571",
         "domain": ".facebook.com",
@@ -146,7 +160,7 @@
         "session": false,
         "firstPartyDomain": "",
         "partitionKey": null,
-        "expirationDate": 1804430316.805,
+        "expirationDate": 1804458475.597,
         "storeId": null
     },
     {
@@ -177,6 +191,20 @@
         "firstPartyDomain": "",
         "partitionKey": null,
         "expirationDate": 1803163355.94,
+        "storeId": null
+    },
+    {
+        "name": "wd",
+        "value": "384x683",
+        "domain": ".facebook.com",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": false,
+        "sameSite": null,
+        "session": true,
+        "firstPartyDomain": "",
+        "partitionKey": null,
         "storeId": null
     },
     {
